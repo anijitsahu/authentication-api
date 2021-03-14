@@ -20,18 +20,15 @@ router.post('/createUser', (req, res) => {
 	console.log("body", req.body)
 	let { email, name, password } = req.body
 
-	// check an user is already exists or not. 
-	// if not creates an user with the credentials provided
-	if (USERS[email]) {
-		res.status(404).json({ msg: "user exists" })
-	} else {
-		if (password && name) {
-			USERS[email] = { name, password }
+	// if no user exists having the same email id
+	if (!USERS[email]) {
+		if (password) {
+			USERS[email] = { name: name || email, password }
 			// add bcrypt here
 
 			fs.writeFile('./userlist.json', JSON.stringify(USERS), (err, data) => {
 				if (err) throw err
-				res.status(200).json({ msg: "user created successfully", userCreated: { email, name } })
+				res.status(200).json({ msg: "user created successfully", userCreated: { email, name: name || email } })
 			})
 		} else {
 			res.status(404).json({ msg: "Please enter username and password" })
