@@ -27,6 +27,8 @@ router.post('/createUser', (req, res) => {
 	} else {
 		if (password && name) {
 			USERS[email] = { name, password }
+			// add bcrypt here
+
 			fs.writeFile('./userlist.json', JSON.stringify(USERS), (err, data) => {
 				if (err) throw err
 				res.status(200).json({ msg: "user created successfully", userCreated: { email, name } })
