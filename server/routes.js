@@ -1,14 +1,16 @@
 // npm packages import
-import express from "express"
+import express, { Router } from "express"
 import fs from "fs"
-import path from "path"
+
+// local file import
+import { comparePassword, generatePasswordHash } from "./passwordOps.js"
 
 // import local user list as using ES6 import so read the file using fs
-const USERS = JSON.parse(fs.readFileSync('./userlist.json', 'utf-8', (err) => {
+const USERS = JSON.parse(fs.readFileSync('./userlist.json', 'utf8', (err) => {
 	if (err) throw err;
 }))
 
-const router = express.Router()
+const router = Router()
 
 // use the middleware for body parsing
 router.use(express.json())
@@ -16,20 +18,27 @@ router.use(express.json())
 console.log("USERS are", USERS, typeof USERS)
 
 // creates a new user
-router.post('/createUser', (req, res) => {
+router.post('/createUser', async (req, res) => {
 	console.log("body", req.body)
 	let { email, name, password } = req.body
 
 	// if no user exists having the same email id
 	if (!USERS[email]) {
 		if (password) {
-			USERS[email] = { name: name || email, password }
-			// add bcrypt here
+			try {
+				// add bcrypt here
+				const passwordHash = await generatePasswordHash(password, 5)
+				USERS[email] = { name: name || email, password: passwordHash }
 
-			fs.writeFile('./userlist.json', JSON.stringify(USERS), (err, data) => {
-				if (err) throw err
-				res.status(200).json({ msg: "user created successfully", userCreated: { email, name: name || email } })
-			})
+				fs.writeFile('./userlist.json', JSON.stringify(USERS), 'utf-8', (err, data) => {
+					if (err) {
+						handleError(err, res)
+					}
+					res.status(200).json({ msg: "user created successfully", userCreated: { email, name: name || email } })
+				})
+			} catch (err) {
+				handleError(err, res)
+			}
 		} else {
 			res.status(404).json({ msg: "Please enter username and password" })
 		}
@@ -37,38 +46,66 @@ router.post('/createUser', (req, res) => {
 })
 
 // login  
-router.post('/login', (req, res) => {
-	let { email, password } = req.body
-	console.log("USERS are", USERS)
-	if (USERS[email] && (USERS[email]["password"] == password)) {
+router.post('/login', async (req, res) => {
+	try {
+		const { email, password } = req.body
+		if (USERS[email]) {
+			const isSame = await comparePassword(password, USERS[email]["password"])
+			console.log('Is same received', isSame)
 
-		res.status(200).json({ name: USERS[email]["name"] })
-	} else {
-		res.status(404).json({ msg: "wrong credentials" })
+			isSame ? res.status(200).json({ name: USERS[email]["name"], email }) : res.status(404).json({ msg: "wrong credentials" })
+		} else {
+			res.status(404).json({ msg: "wrong credentials" })
+		}
+	} catch (err) {
+		handleError(err, res)
 	}
 })
 
 // forget 
-router.get('/forget/:email', (req, res) => {
-	let { email } = req.params
-	console.log("Email", email)
+router.post('/forget/:email', (req, res) => {
+	const { email } = req.params
+	// console.log("Email", email)
 
 	if (USERS[email]) {
-		res.status(200).json({ msg: "Enter new password" })
+		res.status(200).json({ msg: "Enter new password", resetPassword: true })
 	} else {
 		res.status(400).json({ msg: "User does not exists" })
 	}
 })
 
-// reset
-router.put('/reset', (req, res) => {
-	let { email, password } = req.body
-	if (USERS[email]) {
-		USERS[email]["password"] = password
-		res.status(200).json({ msg: "Password reset successfully" })
-	} else {
-		res.status(400).json({ msg: "User does not exists" })
+// reset credentials
+router.put('/resetCredentials', async (req, res) => {
+	let { email, resetPassword, resetEmail } = req.body
+	try {
+
+		if (USERS[email]) {
+			if (resetPassword) {
+				USERS[email]["password"] = await generatePasswordHash(resetPassword, 5)
+			} else if (resetEmail) {
+				USERS[resetEmail] = { name: USERS[email]['name'], password: USERS[email]['password'] }
+
+				// delete the old user
+				delete USERS[email]
+			}
+
+			fs.writeFile('./userlist.json', JSON.stringify(USERS), 'utf8', (err) => {
+				if (err) {
+					handleError(err, res)
+				}
+			})
+			res.status(200).json({ msg: "Password reset successfully" })
+		} else {
+			res.status(400).json({ msg: "User does not exists" })
+		}
+	} catch (err) {
+		handleError(err, res)
 	}
 })
+
+const handleError = (err, res) => {
+	console.log('error occurred', err)
+	res.status(500).json({ msg: 'Internal server error' })
+}
 
 export default router;
