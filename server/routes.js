@@ -36,7 +36,7 @@ router.post('/createUser', (req, res) => {
 	}
 })
 
-// login 
+// login  
 router.post('/login', (req, res) => {
 	let { email, password } = req.body
 	console.log("USERS are", USERS)
