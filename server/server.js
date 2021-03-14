@@ -8,6 +8,7 @@ import serviceRouter from "./routes.js"
 // initialize express
 const app = express()
 
+app.use(helmet())
 // middleware to use the respective router
 app.use('/services', serviceRouter)
 
