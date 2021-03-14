@@ -1,10 +1,10 @@
-const express = require('express')
-const bodyParser = require('body-parser')
+// npm packages import
+import express from "express";
 
 const router = express.Router()
 
-let USERS = {}
-router.use(bodyParser.json())
+const USERS = {}
+router.use(express.json())
 
 // create user
 router.post('/create', (req, res) => {
@@ -59,4 +59,4 @@ router.put('/reset', (req, res) => {
 	}
 })
 
-module.exports = router
+export default router
