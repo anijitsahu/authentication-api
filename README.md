@@ -17,16 +17,16 @@ Back end is implemented using [Node JS](https://nodejs.org/docs/latest-v15.x/api
 <ul>
  <li><b>Forget password</b> feature is implemented </li>
  <li><b>Reset password</b> as well as email id feature is added </li>
- <li>All the user details, email id, password is stored in a file <code>server/userlist.json</code>. <b>All the passwords are encrypted</b></li> 
+ <li>All the user details, email id, password is stored in a file <code>server/userlist.json</code>. <b>All the passwords are encrypted</b>.</li> 
 </ul>
 
 <ul>
-  <li>Ready to use <i>REST APIs</i> </li>
-  <li>Can be consumed any Frontend application framework that supports REST API</li>   
+  <li><i>Ready to use</i> REST APIs </li>
+  <li>Can be consumed by <i>any</i> Frontend application framework that supports REST API</li>   
   <li>Can be used in conjunction with other popular JavaScript framework like <a href="https://reactjs.org/">ReactJS</a></li>  
 </ul>  
 
-  - *for simplicity no database is used*
+  - For *simplicity* no database is used.
 
 
 ## Installation
@@ -78,10 +78,10 @@ Username | Password
 **POST** /services/forget/anijit@gmail.com have no input json
 
 **PUT** /services/resetCredentials have the following input json
-```json
+```js
 {
   "email": "anijit@gmail.com",
-  "resetEmail": "anijit@gmail.com",  // this field is optional
+  "resetEmail": "anijit@gmail.com",  // this field is optional and can be used when there is no resetPassword value
   "resetPassword": "anijit123"
 }  
 ```
