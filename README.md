@@ -17,7 +17,7 @@ Back end is implemented using [Node JS](https://nodejs.org/docs/latest-v15.x/api
 <ul>
  <li><b>Forget password</b> feature is implemented </li>
  <li><b>Reset password</b> as well as email id feature is added </li>
- <li>All the user details, email id, password is stored in a file <code>server/userlist.json</code>. <b>All the passwords are encrypted</b> <li> 
+ <li>All the user details, email id, password is stored in a file <code>server/userlist.json</code>. <b>All the passwords are encrypted</b></li> 
 </ul>
 
 <ul>
@@ -54,3 +54,34 @@ Test it using username `anijit@gmail.com` and password `anijit123` with any REST
 Username | Password
 ---    | ---
 ` anijit@gmail.com ` | ` anijit123`
+
+
+## API Listing
+
+**POST** /services/createUser have the following input json
+```json
+{
+  "name": "Anijit",
+  "email": "anijit@gmail.com",
+  "password": "anijit123"
+}  
+```
+
+**POST** /services/login have the following input json
+```json
+{
+  "email": "anijit@gmail.com",
+  "password": "anijit123"
+}  
+```
+
+**POST** /services/forget/anijit@gmail.com have no input json
+
+**PUT** /services/resetCredentials have the following input json
+```json
+{
+  "email": "anijit@gmail.com",
+  "resetEmail": "anijit@gmail.com",  // this field is optional
+  "resetPassword": "anijit123"
+}  
+```
