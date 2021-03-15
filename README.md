@@ -28,7 +28,7 @@ Back end is implemented using [Node JS](https://nodejs.org/docs/latest-v15.x/api
 
 ## Installation
 
-```git
+```javascript
 git clone https://github.com/anijitsahu/authentication-api.git
 cd authentication-api
 npm install
