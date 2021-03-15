@@ -13,39 +13,39 @@ Back end is implemented using [Node JS](https://nodejs.org/docs/latest-v15.x/api
 </ul>
 
 - It is created using latest version of [Node JS 15](https://nodejs.org/docs/latest-v15.x/api/)
-- Forget password feature is implemented
-- Reset email id as password feature is added
 
-- All the user details, email id, password is stored in a file `server/userlist.json`. **All the passwords are encrypted** 
+<ul>
+ <li>Forget password feature is implemented </li>
+ <li>Reset email id as password feature is added </li>
+ <li>All the user details, email id, password is stored in a file `server/userlist.json`. <b>All the passwords are encrypted</b> <li> 
+</ul>
 
 <ul>
   <li>Ready to use <i>REST APIs</i> </li>
- <li>Can be consumed any Frontend application framework that supports REST API</li> <ul>
-  
-  -Can be used in conjunction with other popular JavaScript framework like [ReactJS](https://reactjs.org/)
+  <li>Can be consumed any Frontend application framework that supports REST API</li>   
+  <li>Can be used in conjunction with other popular JavaScript framework like <a href="https://reactjs.org/">ReactJS</a></li>  
+</ul>  
+
   - *for simplicity no database is used*
 
 
 ## Installation
 
+Clone and go inside the Repository:
 ```javascript
 git clone https://github.com/anijitsahu/authentication-api.git
 cd authentication-api
+```
+Install all the necessary dependencies:
+```
 npm install
- 
-// to run the server
+``` 
+Now run the server
+```
 cd server
 node server.js
 ```
-
-1. Clone the repository using `
-2. git clone https://github.com/anijitsahu/authentication-api.git` from `Git Bash / Command Prompt`
-4. Navigate inside the directory by `authentication-api`
-5. Install all the necessary dependecies by using `npm install` 
-6. Navigate to the directory `cd server`
-7. Run the server by `node server.js`
-8. Test it using username `anijit` and password `anijit123` with any REST client like [Postman](https://www.postman.com/)
-9. In one browser login with 
+Test it using username `anijit` and password `anijit123` with any REST client like [Postman](https://www.postman.com/)
 
 
 **Test users**
