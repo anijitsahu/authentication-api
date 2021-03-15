@@ -15,22 +15,23 @@ const router = Router()
 // use the middleware for body parsing
 router.use(express.json())
 
-console.log("USERS are", USERS, typeof USERS)
+// console.log("USERS are", USERS, typeof USERS)
 
 // creates a new user
 router.post('/createUser', async (req, res) => {
 	console.log("body", req.body)
-	let { email, name, password } = req.body
+	const { email, name, password } = req.body
+	const emailRegex = /^\w\S{3,}@\D{2,5}\.\D{2,3}/
 
 	// if no user exists having the same email id
-	if (!USERS[email]) {
+	if (!USERS[email] && emailRegex.test(email)) {
 		if (password) {
 			try {
 				// add bcrypt here
 				const passwordHash = await generatePasswordHash(password, 5)
 				USERS[email] = { name: name || email, password: passwordHash }
 
-				fs.writeFile('./userlist.json', JSON.stringify(USERS), 'utf-8', (err, data) => {
+				fs.writeFile('./userlist.json', JSON.stringify(USERS), 'utf8', (err) => {
 					if (err) {
 						handleError(err, res)
 					}
@@ -40,8 +41,10 @@ router.post('/createUser', async (req, res) => {
 				handleError(err, res)
 			}
 		} else {
-			res.status(404).json({ msg: "Please enter username and password" })
+			res.status(400).json({ msg: "Please enter username and password" })
 		}
+	} else {
+		res.status(400).json({ msg: "User already exists or Invalid EmailId" })
 	}
 })
 
@@ -65,8 +68,6 @@ router.post('/login', async (req, res) => {
 // forget 
 router.post('/forget/:email', (req, res) => {
 	const { email } = req.params
-	// console.log("Email", email)
-
 	if (USERS[email]) {
 		res.status(200).json({ msg: "Enter new password", resetPassword: true })
 	} else {
